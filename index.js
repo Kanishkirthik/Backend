@@ -8,9 +8,15 @@ const jwt = require("jsonwebtoken");
 const Bcrypt = require("bcryptjs");
 const cors = require("cors");
 const app = express();
-const Private = "Kanish@KK";
+const dotenv=require('dotenv');
+const cookieParser = require("cookie-parser");
+const usermodel = require("./models/user");
+dotenv.config();
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser())
+app.use(cors({
+  credentials:true
+}));
 mongoose
   .connect(
     "mongodb+srv://Kanish:Kanish%400603@kanish0603.p7ibjps.mongodb.net/E-learning"
@@ -58,60 +64,25 @@ app.post("/Cart", async (req, res) => {
   await Cart.create({ Title });
 });
 app.post("/Register", async (req, res) => {
-  const { Username, Password ,Role} = req.body;
-  console.log(Username, Password,Role);
-  if (!Username || !Password || !Role) {
-    res.status(400);
-    throw new Error("Please fill the all deatils");
-  }
-  const userexits = await User.findOne({ Username });
-  if (userexits) {
-    res.status(400);
-    throw new Error("user already exits");
-  }
-  const salt = await Bcrypt.genSalt(10);
-  const hashpassword = await Bcrypt.hash(Password, salt);
-  const user = await User.create({
-    Username,
-    Password: hashpassword,
-    Role,
-  });
-  if (user) {
-    res.status(200).json({
-      _id: user.id,
-      Username: user.Username,
-      Password: user.Password,
-      token: genjwt(user.id),
-      Role:user.Role
-    });
-   
-  }
+  await User.create(req.body);
 });
 app.post("/Login", async (req, res) => {
   const { Username, Password } = req.body;
   console.log(Username);
   const userexits = await User.findOne({ Username });
   if (userexits && (await Bcrypt.compare(Password, userexits.Password))) {
-    console.log(
-       res.status(200).json({
-        _id: userexits.id,
-        Username: userexits.Username,
-        Password: userexits.Password,
-        token: genjwt(userexits.id),
-      })
-    );
-    
+  res.cookie("token",genjwt(userexits.id),{httpOnly:true});
   } else {
     res.status(400);
     // throw new Error("Invalid Login");
   }
 });
 
-app.listen(3001, () => {
+app.listen(process.env.port, () => {
   console.log("server is running");
 });
 const genjwt = (id) => {
-  return jwt.sign({ id }, Private, {
-    expiresIn: "30d",
+  return jwt.sign({ id }, process.env.key, {
+    expiresIn: "1h",
   });
 };
