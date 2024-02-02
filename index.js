@@ -4,16 +4,12 @@ const User = require("./models/user");
 const Cart = require("./models/Cart");
 const express = require("express");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const Bcrypt = require("bcryptjs");
 const cors = require("cors");
 const app = express();
-const dotenv=require('dotenv');
-const cookieParser = require("cookie-parser");
+const dotenv=require('dotenv')
 const usermodel = require("./models/user");
 dotenv.config();
 app.use(express.json());
-app.use(cookieParser())
 app.use(cors({
   credentials:true
 }));
@@ -66,23 +62,6 @@ app.post("/Cart", async (req, res) => {
 app.post("/Register", async (req, res) => {
   await User.create(req.body);
 });
-app.post("/Login", async (req, res) => {
-  const { Username, Password } = req.body;
-  console.log(Username);
-  const userexits = await User.findOne({ Username });
-  if (userexits && (await Bcrypt.compare(Password, userexits.Password))) {
-  res.cookie("token",genjwt(userexits.id),{httpOnly:true});
-  } else {
-    res.status(400);
-    // throw new Error("Invalid Login");
-  }
-});
-
 app.listen(process.env.port, () => {
   console.log("server is running");
 });
-const genjwt = (id) => {
-  return jwt.sign({ id }, process.env.key, {
-    expiresIn: "1h",
-  });
-};
