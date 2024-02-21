@@ -46,6 +46,7 @@ app.get('/Profile',(req,res)=>{
 });
 
 app.post('/Profile',async(req,res)=>{
+  console.log(req.body);
   await Profile.create(req.body);
 })
 app.get('/Register',(req,res)=>{
@@ -59,6 +60,7 @@ app.post("/Cart", async (req, res) => {
 });
 app.post("/Register", async (req, res) => {
   await User.create(req.body);
+  res.json(req.body);
 });
 app.listen(process.env.port, () => {
   console.log("server is running");
