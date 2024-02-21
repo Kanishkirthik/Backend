@@ -4,13 +4,11 @@ const User = require("./models/user");
 const Cart = require("./models/Cart");
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const app = express();
 const dotenv=require('dotenv')
 const usermodel = require("./models/user");
 dotenv.config();
 app.use(express.json());
-app.use(cors({}));
 mongoose
   .connect(
     "mongodb+srv://Kanish:Kanish%400603@kanish0603.p7ibjps.mongodb.net/E-learning"
