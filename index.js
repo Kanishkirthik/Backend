@@ -4,12 +4,16 @@ const User = require("./models/user");
 const Cart = require("./models/Cart");
 const express = require("express");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const Bcrypt = require("bcryptjs");
 const cors = require("cors");
 const app = express();
-const dotenv=require('dotenv')
+const dotenv=require('dotenv');
+const cookieParser = require("cookie-parser");
 const usermodel = require("./models/user");
 dotenv.config();
 app.use(express.json());
+app.use(cookieParser())
 app.use(cors());
 mongoose
   .connect(
@@ -46,7 +50,6 @@ app.get('/Profile',(req,res)=>{
 });
 
 app.post('/Profile',async(req,res)=>{
-  console.log(req.body);
   await Profile.create(req.body);
 })
 app.get('/Register',(req,res)=>{
@@ -62,6 +65,12 @@ app.post("/Register", async (req, res) => {
   await User.create(req.body);
   res.json(req.body);
 });
+
 app.listen(process.env.port, () => {
   console.log("server is running");
 });
+const genjwt = (id) => {
+  return jwt.sign({ id }, process.env.key, {
+    expiresIn: "1h",
+  });
+};
