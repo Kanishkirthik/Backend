@@ -9,4 +9,3 @@ const mongoose =require('mongoose');
  });
  const usermodel=mongoose.model("User",user);
  module.exports=usermodel;
- 
