@@ -4,7 +4,7 @@ const mongoose =require('mongoose');
     Email:{type:String,required:true,unique:true},
     Uid:{type:String,required:true,unique:true},
     Password:{type:String},
-    Role:{type:String,default: "Mentor"},
+    Role:{type:String,default: "Student"},
     Photourl:{type:String,required:true,unique:true},
  });
  const usermodel=mongoose.model("User",user);

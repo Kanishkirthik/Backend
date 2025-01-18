@@ -15,4 +15,3 @@ const schema = new mongoose.Schema({
   Rating:{type :Number,default:0}
 });
 module.exports = mongoose.model('Course', schema);
-
